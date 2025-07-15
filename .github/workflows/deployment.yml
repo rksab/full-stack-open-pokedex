@@ -33,6 +33,26 @@ jobs:
       - name: Trigger deployment
         if: ${{ github.event_name == 'push' && !contains(toJson(join(github.event.commits.*.message)), '#skip')}}
         run: curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}
+      - name: Notify success on discord
+        if: ${{ success() && github.event_name == 'push' && !contains(toJson(join(github.event.commits.*.message)), '#skip') }}
+        uses: rjstone/discord-webhook-notify@v2
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          message: |
+            **Deployment Successful**
+            A new version was deployed from commit [`${{ github.sha }}`](${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }})
+            Triggered by: `${{ github.actor }}`
+      - name: Notify failure on discord
+        if: ${{ failure() }}
+        uses: rjstone/discord-webhook-notify@v2
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          message: |
+             **Build Failed**
+            Commit: [`${{ github.sha }}`](${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }})
+            Author: `${{ github.actor }}`
+            Message: `${{ github.event.head_commit.message }}`
+            [View Logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
   tag_release:
     needs: [simple_deployment_pipeline]
     if: ${{ github.event_name == 'push' && !contains(toJson(join(github.event.commits.*.message)), '#skip')}}
