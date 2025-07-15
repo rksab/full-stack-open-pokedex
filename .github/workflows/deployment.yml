@@ -39,9 +39,9 @@ jobs:
         with:
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
           severity: success
-          message: |
-            **Deployment Successful**
-            A new version was deployed from commit [`${{ github.sha }}`](${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }})
+          text: |
+            Deployment Successful!
+            Commit: [`${{ github.sha }}`](${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }})
             Triggered by: `${{ github.actor }}`
       - name: Notify failure on discord
         if: ${{ failure() }}
@@ -49,8 +49,8 @@ jobs:
         with:
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
           severity: error
-          message: |
-            **Build Failed**
+          text: |
+            Build Failed!
             Commit: [`${{ github.sha }}`](${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }})
             Author: `${{ github.actor }}`
             Message: `${{ github.event.head_commit.message }}`
