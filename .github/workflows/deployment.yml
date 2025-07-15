@@ -33,13 +33,27 @@ jobs:
       - name: Trigger deployment
         if: ${{ github.event_name == 'push' && !contains(toJson(join(github.event.commits.*.message)), '#skip')}}
         run: curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}
-      - name: Discord notification
+      - name: Discord notification on success
+        if: ${{ success() && github.event_name == 'push' && !contains(toJson(join(github.event.commits.*.message)), '#skip') }}
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         uses: Ilshidur/action-discord@master
         with:
           args: |
             Deployment Complete
+            [View Render Deployment](https://full-stack-open-pokedex-yucs.onrender.com/)
+            Project: **{{ EVENT_PAYLOAD.repository.full_name }}**
+            Commit: [`{{ EVENT_PAYLOAD.head_commit.id }}`]({{ EVENT_PAYLOAD.head_commit.url }})
+            Message: _{{ EVENT_PAYLOAD.head_commit.message }}_
+            Author: {{ EVENT_PAYLOAD.head_commit.author.username }}
+      - name: Discord notification on failure
+        if: ${{ failure() }}
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        uses: Ilshidur/action-discord@master
+        with:
+          args: |
+            Deployment failed for 
             Project: **{{ EVENT_PAYLOAD.repository.full_name }}**
             Commit: [`{{ EVENT_PAYLOAD.head_commit.id }}`]({{ EVENT_PAYLOAD.head_commit.url }})
             Message: _{{ EVENT_PAYLOAD.head_commit.message }}_
