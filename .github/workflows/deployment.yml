@@ -38,7 +38,12 @@ jobs:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         uses: Ilshidur/action-discord@master
         with:
-          args: "The project {{ EVENT_PAYLOAD.repository.full_name }} has been deployed."
+          args: |
+            Deployment Complete
+            Project: **{{ EVENT_PAYLOAD.repository.full_name }}**
+            Commit: [`{{ EVENT_PAYLOAD.head_commit.id }}`]({{ EVENT_PAYLOAD.head_commit.url }})
+            Message: _{{ EVENT_PAYLOAD.head_commit.message }}_
+            Author: {{ EVENT_PAYLOAD.head_commit.author.username }}
   tag_release:
     needs: [simple_deployment_pipeline]
     if: ${{ github.event_name == 'push' && !contains(toJson(join(github.event.commits.*.message)), '#skip')}}
