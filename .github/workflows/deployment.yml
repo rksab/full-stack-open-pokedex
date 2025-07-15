@@ -34,23 +34,21 @@ jobs:
         if: ${{ github.event_name == 'push' && !contains(toJson(join(github.event.commits.*.message)), '#skip')}}
         run: curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}
       - name: Notify success on discord
-        uses: rjstone/discord-webhook-notify@v2
         if: ${{ success() && github.event_name == 'push' && !contains(toJson(join(github.event.commits.*.message)), '#skip') }}
+        uses: Ilshidur/action-discord@master
         with:
-          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
-          severity: success
-          text: |
-            Deployment Successful!
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          message: |
+            **Deployment Successful**
             Commit: [`${{ github.sha }}`](${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }})
             Triggered by: `${{ github.actor }}`
       - name: Notify failure on discord
-        uses: rjstone/discord-webhook-notify@v2
         if: ${{ failure() }}
+        uses: Ilshidur/action-discord@master
         with:
-          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
-          severity: error
-          text: |
-            Build Failed!
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          message: |
+            **Build Failed**
             Commit: [`${{ github.sha }}`](${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }})
             Author: `${{ github.actor }}`
             Message: `${{ github.event.head_commit.message }}`
