@@ -48,7 +48,7 @@ jobs:
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK }}
           message: |
-             **Build Failed**
+            **Build Failed**
             Commit: [`${{ github.sha }}`](${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }})
             Author: `${{ github.actor }}`
             Message: `${{ github.event.head_commit.message }}`
