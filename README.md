@@ -17,6 +17,7 @@ Start by running `npm install` inside the project folder
 ##The link to the other repo: https://github.com/rksab/CI-CD
 
 ##Exercise11.1:
+Say, we have a team of about 6 people working on a Python project. As it's an interpreted language, static code analysis helps catch issues which otherwise would be caught by a compiler.
 Tools Available: Pylint, Flake, Black, Ruff
 
 Testing:the most popular framework is **pytest**, which allows writing simple functions for tests, supports fixtures for reusable setup code, and integrates well with plugins. The Python standard library includes **unittest**, which follows the xUnit style and is good for more structured test cases. Some teams also use **nose2** for a more feature-rich unittest-compatible option.
